@@ -94,6 +94,41 @@ export interface SummarizationRequestedContent {
   msg: string;
 }
 
+// MCP Sampling message types
+export interface SamplingMessage {
+  role: 'user' | 'assistant';
+  content: Content;
+}
+
+export interface ModelPreferences {
+  hints?: Array<{ name?: string }>;
+  costPriority?: number;
+  speedPriority?: number;
+  intelligencePriority?: number;
+}
+
+export interface SamplingRequestContent {
+  type: 'samplingRequest';
+  id: string;
+  extensionName: string;
+  messages: SamplingMessage[];
+  modelPreferences?: ModelPreferences;
+  systemPrompt?: string;
+  includeContext?: string;
+  temperature?: number;
+  maxTokens?: number;
+  stopSequences?: string[];
+}
+
+export interface SamplingResponseContent {
+  type: 'samplingResponse';
+  id: string;
+  model: string;
+  stopReason?: string;
+  role: 'user' | 'assistant';
+  content: Content;
+}
+
 export type MessageContent =
   | TextContent
   | ImageContent
@@ -101,7 +136,9 @@ export type MessageContent =
   | ToolResponseMessageContent
   | ToolConfirmationRequestMessageContent
   | ContextLengthExceededContent
-  | SummarizationRequestedContent;
+  | SummarizationRequestedContent
+  | SamplingRequestContent
+  | SamplingResponseContent;
 
 export interface Message {
   id?: string;
@@ -231,6 +268,18 @@ export function getToolConfirmationContent(
   return message.content.find(
     (content): content is ToolConfirmationRequestMessageContent =>
       content.type === 'toolConfirmationRequest'
+  );
+}
+
+export function getSamplingRequests(message: Message): SamplingRequestContent[] {
+  return message.content.filter(
+    (content): content is SamplingRequestContent => content.type === 'samplingRequest'
+  );
+}
+
+export function getSamplingResponses(message: Message): SamplingResponseContent[] {
+  return message.content.filter(
+    (content): content is SamplingResponseContent => content.type === 'samplingResponse'
   );
 }
 

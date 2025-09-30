@@ -116,6 +116,30 @@ pub struct SummarizationRequested {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct SamplingRequest {
+    pub id: String,
+    pub extension_name: String,
+    pub messages: Vec<rmcp::model::SamplingMessage>,
+    pub model_preferences: Option<rmcp::model::ModelPreferences>,
+    pub system_prompt: Option<String>,
+    pub include_context: Option<String>,
+    pub temperature: Option<f64>,
+    pub max_tokens: Option<i32>,
+    pub stop_sequences: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct SamplingResponse {
+    pub id: String,
+    pub model: String,
+    pub stop_reason: Option<String>,
+    pub role: rmcp::model::Role,
+    pub content: rmcp::model::Content,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 /// Content passed inside a message, which can be both simple content and tool content
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum MessageContent {
@@ -129,6 +153,8 @@ pub enum MessageContent {
     RedactedThinking(RedactedThinkingContent),
     ContextLengthExceeded(ContextLengthExceeded),
     SummarizationRequested(SummarizationRequested),
+    SamplingRequest(SamplingRequest),
+    SamplingResponse(SamplingResponse),
 }
 
 impl fmt::Display for MessageContent {
@@ -161,6 +187,12 @@ impl fmt::Display for MessageContent {
             }
             MessageContent::SummarizationRequested(r) => {
                 write!(f, "[SummarizationRequested: {}]", r.msg)
+            }
+            MessageContent::SamplingRequest(r) => {
+                write!(f, "[SamplingRequest: {} to {}]", r.id, r.extension_name)
+            }
+            MessageContent::SamplingResponse(r) => {
+                write!(f, "[SamplingResponse: {} from {}]", r.id, r.model)
             }
         }
     }

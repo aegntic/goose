@@ -17,8 +17,8 @@ use utoipa::{OpenApi, ToSchema};
 
 use goose::conversation::message::{
     ContextLengthExceeded, FrontendToolRequest, Message, MessageContent, MessageMetadata,
-    RedactedThinkingContent, SummarizationRequested, ThinkingContent, ToolConfirmationRequest,
-    ToolRequest, ToolResponse,
+    RedactedThinkingContent, SamplingRequest, SamplingResponse, SummarizationRequested,
+    ThinkingContent, ToolConfirmationRequest, ToolRequest, ToolResponse,
 };
 use utoipa::openapi::schema::{
     AdditionalProperties, AnyOfBuilder, ArrayBuilder, ObjectBuilder, OneOfBuilder, Schema,
@@ -315,6 +315,8 @@ derive_utoipa!(Annotations as AnnotationsSchema);
 derive_utoipa!(ResourceContents as ResourceContentsSchema);
 derive_utoipa!(JsonObject as JsonObjectSchema);
 
+
+
 // Create a manual schema for the generic Annotated type
 // We manually define this to avoid circular references from RawContent::Audio(AudioContent)
 // where AudioContent = Annotated<RawAudioContent>
@@ -431,6 +433,8 @@ impl<'__s> ToSchema<'__s> for AnnotatedSchema {
         ResourceContentsSchema,
         ContextLengthExceeded,
         SummarizationRequested,
+        SamplingRequest,
+        SamplingResponse,
         JsonObjectSchema,
         RoleSchema,
         ProviderMetadata,

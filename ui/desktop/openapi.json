@@ -2918,6 +2918,48 @@
                 }
               }
             ]
+          },
+          {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SamplingRequest"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "samplingRequest"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SamplingResponse"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "samplingResponse"
+                    ]
+                  }
+                }
+              }
+            ]
           }
         ],
         "description": "Content passed inside a message, which can be both simple content and tool content",
@@ -3486,6 +3528,88 @@
         "properties": {
           "session_id": {
             "type": "string"
+          }
+        }
+      },
+      "SamplingRequest": {
+        "type": "object",
+        "required": [
+          "id",
+          "extensionName",
+          "messages"
+        ],
+        "properties": {
+          "extensionName": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "includeContext": {
+            "type": "string",
+            "nullable": true
+          },
+          "maxTokens": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/rmcp.model.SamplingMessage"
+            }
+          },
+          "modelPreferences": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/rmcp.model.ModelPreferences"
+              }
+            ],
+            "nullable": true
+          },
+          "stopSequences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "systemPrompt": {
+            "type": "string",
+            "nullable": true
+          },
+          "temperature": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        }
+      },
+      "SamplingResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "model",
+          "role",
+          "content"
+        ],
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/rmcp.model.Content"
+          },
+          "id": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/rmcp.model.Role"
+          },
+          "stopReason": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

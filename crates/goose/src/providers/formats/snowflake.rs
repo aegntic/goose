@@ -69,6 +69,9 @@ pub fn format_messages(messages: &[Message]) -> Vec<Value> {
                 MessageContent::FrontendToolRequest(_tool_request) => {
                     // Skip frontend tool requests
                 }
+                MessageContent::SamplingRequest(_) | MessageContent::SamplingResponse(_) => {
+                    // Skip sampling messages - they are internal to MCP protocol
+                }
             }
         }
 

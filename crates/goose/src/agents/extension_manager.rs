@@ -1168,6 +1168,14 @@ impl SamplingHandler for ExtensionSamplingHandler {
                 crate::conversation::message::MessageContent::Image(img) => {
                     Content::image(&img.data, &img.mime_type)
                 }
+                crate::conversation::message::MessageContent::SamplingRequest(_) => {
+                    // Skip sampling requests - they are internal to MCP protocol
+                    Content::text("")
+                }
+                crate::conversation::message::MessageContent::SamplingResponse(_) => {
+                    // Skip sampling responses - they are internal to MCP protocol
+                    Content::text("")
+                }
                 _ => Content::text(""),
             }
         } else {

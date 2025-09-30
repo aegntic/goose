@@ -54,6 +54,14 @@ pub fn to_bedrock_message_content(content: &MessageContent) -> Result<bedrock::C
         MessageContent::SummarizationRequested(_) => {
             bail!("SummarizationRequested should not get passed to the provider")
         }
+        MessageContent::SamplingRequest(_) => {
+            // Sampling requests are internal to MCP protocol - skip
+            bedrock::ContentBlock::Text("".to_string())
+        }
+        MessageContent::SamplingResponse(_) => {
+            // Sampling responses are internal to MCP protocol - skip
+            bedrock::ContentBlock::Text("".to_string())
+        }
         MessageContent::ToolRequest(tool_req) => {
             let tool_use_id = tool_req.id.to_string();
             let tool_use = if let Ok(call) = tool_req.tool_call.as_ref() {

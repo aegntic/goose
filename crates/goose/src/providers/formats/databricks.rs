@@ -133,6 +133,14 @@ fn format_messages(messages: &[Message], image_format: &ImageFormat) -> Vec<Data
                 MessageContent::SummarizationRequested(_) => {
                     continue;
                 }
+                MessageContent::SamplingRequest(_) => {
+                    // Skip sampling requests - they are internal to MCP protocol
+                    continue;
+                }
+                MessageContent::SamplingResponse(_) => {
+                    // Skip sampling responses - they are internal to MCP protocol
+                    continue;
+                }
                 MessageContent::ToolResponse(response) => {
                     match &response.tool_result {
                         Ok(contents) => {

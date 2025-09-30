@@ -16,10 +16,13 @@ import {
   getToolRequests,
   getToolResponses,
   getToolConfirmationContent,
+  getSamplingRequests,
+  getSamplingResponses,
   createToolErrorResponseMessage,
 } from '../types/message';
 import ToolCallConfirmation from './ToolCallConfirmation';
 import MessageCopyLink from './MessageCopyLink';
+import SamplingMessage from './SamplingMessage';
 import { NotificationEvent } from '../hooks/useMessageStream';
 import { cn } from '../utils';
 
@@ -88,6 +91,10 @@ export default function GooseMessage({
 
   // Get tool requests from the message
   const toolRequests = getToolRequests(message);
+
+  // Get sampling requests and responses from the message
+  const samplingRequests = getSamplingRequests(message);
+  const samplingResponses = getSamplingResponses(message);
 
   // Get current message index
   const messageIndex = messages.findIndex((msg) => msg.id === message.id);
@@ -287,6 +294,26 @@ export default function GooseMessage({
             isClicked={messageIndex < messageHistoryIndex}
             toolConfirmationContent={toolConfirmationContent}
           />
+        )}
+
+        {/* Render sampling messages */}
+        {(samplingRequests.length > 0 || samplingResponses.length > 0) && (
+          <div className={cn((displayText || toolRequests.length > 0) && 'mt-2')}>
+            {samplingRequests.map((request) => (
+              <SamplingMessage
+                key={request.id}
+                samplingRequest={request}
+                isStreaming={isStreaming}
+              />
+            ))}
+            {samplingResponses.map((response) => (
+              <SamplingMessage
+                key={response.id}
+                samplingResponse={response}
+                isStreaming={isStreaming}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

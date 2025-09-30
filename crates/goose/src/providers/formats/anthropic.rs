@@ -118,6 +118,9 @@ pub fn format_messages(messages: &[Message]) -> Vec<Value> {
                         }));
                     }
                 }
+                MessageContent::SamplingRequest(_) | MessageContent::SamplingResponse(_) => {
+                    // Skip sampling messages - they are internal to MCP protocol
+                }
             }
         }
 
